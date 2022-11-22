@@ -44,7 +44,8 @@ export class UsersService {
   async deleteSingleUser(userID: string) {
     const getUser = await this.usersRepository.findOne({ where: { id: userID } })
     if (!getUser) throw new NotFoundException("User not found");
-    await this.usersRepository.remove(getUser)
+    const user = await this.usersRepository.remove(getUser)
+    return user
   }
 
 }

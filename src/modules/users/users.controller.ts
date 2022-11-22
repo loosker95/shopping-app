@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UsersService } from './users.sevice';
@@ -10,26 +10,43 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
     @Post()
-    async addUser(@Body() usercreate: CreateUserDto){
-        const data = await this.usersService.createUser(usercreate)
-        return returnResponse(HttpStatus.CREATED, "User created successfully!", data)
+    @UsePipes(ValidationPipe)
+    async addUser(@Body() usercreate: CreateUserDto) {
+        try {
+            const data = await this.usersService.createUser(usercreate)
+            return returnResponse(HttpStatus.CREATED, "User created successfully!", data)
+        } catch (err) {
+            return returnResponse(err.status, err.message);
+        }
     }
 
     @Get()
     async getAllUser() {
-        const data = await this.usersService.getUsers()
-        return returnResponse(HttpStatus.OK, "Get users successfully!", data)
+        try {
+            const data = await this.usersService.getUsers()
+            return returnResponse(HttpStatus.OK, "Get users successfully!", data)
+        } catch (err) {
+            return returnResponse(err.status, err.message);
+        }
     }
 
     @Get(':id')
-    async getOneUser(@Param('id') id: string){
-        const data = await this.usersService.getSingleUser(id)
-        return returnResponse(HttpStatus.OK, "Get user successfully!", data)
+    async getOneUser(@Param('id') id: string) {
+        try {
+            const data = await this.usersService.getSingleUser(id)
+            return returnResponse(HttpStatus.OK, "Get user successfully!", data)
+        } catch (err) {
+            return returnResponse(err.status, err.message);
+        }
     }
 
     @Delete(':id')
-    async deleteuser(@Param('id') id: string){
-        const data = await this.usersService.deleteSingleUser(id)
-        return returnResponse(HttpStatus.ACCEPTED, "User deleted successfully!", data)
+    async deleteuser(@Param('id') id: string) {
+        try {
+            const data = await this.usersService.deleteSingleUser(id)
+            return returnResponse(HttpStatus.ACCEPTED, "User deleted successfully!", data)
+        } catch (err) {
+            return returnResponse(err.status, err.message);
+        }
     }
 }
