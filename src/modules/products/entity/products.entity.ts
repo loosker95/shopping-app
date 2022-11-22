@@ -36,7 +36,10 @@ export default class products {
     public created_at: Date
 
     @IsDate()
-    @UpdateDateColumn({ nullable: true, type: 'timestamptz'})
+    @UpdateDateColumn({ 
+        nullable: true, 
+        type: 'timestamptz'
+    })
     public updated_at: Date
 
     @BeforeInsert()
