@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
 import { CreateProductDto } from './dto/createProducts.dto';
+import { UpdateProductsDto } from './dto/update-products.dto';
 import { ProductsService } from './products.service';
+
 
 
 @Controller('api/v1/products')
@@ -34,6 +36,17 @@ export class ProductsController {
         try {
             const data = await this.productsService.getSingleProduct(id)
             return returnResponse(HttpStatus.OK, "Get product successfully!", data)
+        } catch (err) {
+            return returnResponse(err.status, err.message);
+        }
+    }
+
+    @Patch(':id')
+    @UsePipes(ValidationPipe)
+    async updateOneproduct(@Param('id') id: string, @Body() updateProduct: UpdateProductsDto){
+        try{
+            const data = await this.productsService.updateSingleProducts(id, updateProduct)
+            return returnResponse(HttpStatus.OK, "Product updated successfully!", data)
         } catch (err) {
             return returnResponse(err.status, err.message);
         }

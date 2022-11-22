@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate, UpdateDateColumn } from "typeorm";
 import { IsDate } from "class-validator"
 
 @Entity('products')
@@ -31,19 +31,20 @@ export default class products {
     @Column({ nullable: false, type: "float", default: 0.0 })
     public rating: number
 
-    @Column({ nullable: false })
+    @Column({nullable: true, type: 'timestamp'})
     @IsDate()
-    public created_at: string
+    public created_at: Date
 
-    @Column({ nullable: false })
+    @Column({ nullable: true, type: 'timestamp'})
     @IsDate()
-    public updated_at: string
+    @UpdateDateColumn()
+    public updated_at: Date
 
     @BeforeInsert()
     async beforeCreateProducts() {
         this.avatar = 'https://tinyurl.com/3y7bjr8e'
         this.rating = 0.0
-        this.created_at = Date()
-        this.updated_at = Date()
-    }
+        this.created_at = new Date()
+        this.updated_at = new Date()
+    }    
 }
