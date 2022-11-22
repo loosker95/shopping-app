@@ -41,7 +41,7 @@ export default class products {
 
     @BeforeInsert()
     async beforeCreateProducts() {
-        this.avatar = 'https://tinyurl.com/2fuejv2d'
+        this.avatar = 'https://tinyurl.com/3y7bjr8e'
         this.rating = 0.0
         this.created_at = Date()
         this.updated_at = Date()
