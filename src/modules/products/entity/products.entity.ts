@@ -31,13 +31,12 @@ export default class products {
     @Column({ nullable: false, type: "float", default: 0.0 })
     public rating: number
 
-    @Column({nullable: true, type: 'timestamp'})
+    @Column({nullable: true, type: 'timestamptz'})
     @IsDate()
     public created_at: Date
 
-    @Column({ nullable: true, type: 'timestamp'})
     @IsDate()
-    @UpdateDateColumn()
+    @UpdateDateColumn({ nullable: true, type: 'timestamptz'})
     public updated_at: Date
 
     @BeforeInsert()
