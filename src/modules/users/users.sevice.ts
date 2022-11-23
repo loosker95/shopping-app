@@ -58,11 +58,21 @@ export class UsersService {
     return user
   }
 
+
+
+  async registeruser(addRegisterUser: CreateUserDto){
+    const hashPass = await hashPassword(addRegisterUser.password);
+    addRegisterUser.password = hashPass;
+    if(addRegisterUser.email){await this.isEmailExist(addRegisterUser.email)}
+    const newUserRegister = this.usersRepository.create(addRegisterUser)
+    await this.usersRepository.save(newUserRegister);
+    return newUserRegister;
+  }
+
+
   async isEmailExist(email: string){
     const getEmail = await this.usersRepository.findOne({where: {email: email}})
     if (getEmail) throw new NotFoundException("Email already exist...");
     return getEmail
   }
-
-
 }
