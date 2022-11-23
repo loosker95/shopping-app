@@ -1,5 +1,5 @@
 import { IsDate } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
 
@@ -35,12 +35,18 @@ export default class orders{
 
     @Column({nullable: true, type: 'timestamptz'})
     @IsDate()
-    public created_at: string 
+    public created_at: Date 
 
     @UpdateDateColumn({
         nullable: true, 
         type: 'timestamptz'
     })
     @IsDate()
-    public updated_at: string
+    public updated_at: Date
+
+    @BeforeInsert()
+    async beforeInsertPayment(){
+        this.created_at = new Date()
+        this.updated_at = new Date();
+    }
 }
