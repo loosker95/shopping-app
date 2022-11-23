@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { hashPassword } from 'src/utils/hash/hashPassword';
 import { BeforeInsert, EventSubscriber, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
+import { UpdateUserDto } from './dto/update-users.dto';
 import users from './entity/users.entity';
 
 
@@ -20,13 +21,10 @@ export class UsersService {
     const hashPass = await hashPassword(userData.password);
     userData.password = hashPass;
 
-    // const emailExist = await this.usersRepository.findOne({where: {email: userData.email}})
-    // if (emailExist) throw new NotFoundException("An account with this emai already exist");
-
+    if(userData.email){await this.isEmailExist(userData.email)}
     const newUser = this.usersRepository.create(userData)
     await this.usersRepository.save(newUser);
     return newUser;
-
   }
 
   async getUsers() {
@@ -41,11 +39,30 @@ export class UsersService {
     return user;
   }
 
+  async updateSingleuser(id: string, userUpdate: UpdateUserDto) {
+    if(userUpdate.email){await this.isEmailExist(userUpdate.email)}
+
+    const hashPass = await hashPassword(userUpdate.password);
+    userUpdate.password = hashPass;
+    await this.usersRepository.update(id, userUpdate)
+    const getUser = await this.usersRepository.findOne({where: {id: id}})
+
+    if (!getUser) throw new NotFoundException("User not found");
+    return getUser
+  }
+
   async deleteSingleUser(userID: string) {
     const getUser = await this.usersRepository.findOne({ where: { id: userID } })
     if (!getUser) throw new NotFoundException("User not found");
     const user = await this.usersRepository.remove(getUser)
     return user
   }
+
+  async isEmailExist(email: string){
+    const getEmail = await this.usersRepository.findOne({where: {email: email}})
+    if (getEmail) throw new NotFoundException("Email already exist...");
+    return getEmail
+  }
+
 
 }

@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
 import { CreateUserDto } from './dto/createUser.dto';
+import { UpdateUserDto } from './dto/update-users.dto';
 import { UsersService } from './users.sevice';
 
 
@@ -35,6 +36,17 @@ export class UsersController {
         try {
             const data = await this.usersService.getSingleUser(id)
             return returnResponse(HttpStatus.OK, "Get user successfully!", data)
+        } catch (err) {
+            return returnResponse(err.status, err.message);
+        }
+    }
+
+    @Patch(':id')
+    @UsePipes(ValidationPipe)
+    async udateOneUser(@Param('id') id: string, @Body() updadeUser: UpdateUserDto) {
+        try {
+            const data = await this.usersService.updateSingleuser(id, updadeUser)
+            return returnResponse(HttpStatus.OK, "Users updated successfully!", data)
         } catch (err) {
             return returnResponse(err.status, err.message);
         }

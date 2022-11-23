@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, UpdateDateColumn, BeforeUpdate } from "typeorm";
 import { Length, IsEmail, IsDate, Min } from "class-validator"
+import * as bcrypt from 'bcrypt';
 
 @Entity('users')
 export default class users {
@@ -30,21 +31,30 @@ export default class users {
     @Column({default: 'user'})
     public role: string;
 
-    @Column({nullable: false})
+    @Column({nullable: true, type: 'timestamptz'})
     @IsDate()
-    public created_at: string
+    public created_at: Date
 
-    @Column({nullable: false})
+    @UpdateDateColumn({
+        nullable: true, 
+        type: 'timestamptz'
+    })
     @IsDate()
-    public updated_at: string
+    public updated_at: Date
 
     @BeforeInsert()
     async beforeCreateDate() {
-        this.created_at = Date()
-        this.updated_at = Date();
+        this.created_at = new Date()
+        this.updated_at = new Date();
         this.avatar = 'https://tinyurl.com/2fuejv2d'
         this.verified = false;
         this.role = 'user'
+    }
+
+    @BeforeUpdate()
+    async beforeUpdatePasswd(){
+        const salt = await bcrypt.genSalt(10);
+        await bcrypt.hash(this.password, salt);
     }
 
 }
