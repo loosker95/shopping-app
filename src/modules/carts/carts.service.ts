@@ -2,6 +2,7 @@ import { NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Cartsdto } from "./dto/carts.dto";
+import { UpdateCartsdto } from "./dto/update-cart.dto";
 import Carts from "./entity/carts.entity";
 
 
@@ -25,13 +26,20 @@ export class CartsServices{
 
     async getSingleCart(id: string){
         const cart = await this.cartsRepository.findOne({where: {id: id}})
-        if (!cart) throw new NotFoundException("Carts not found");
+        if (!cart) throw new NotFoundException("Cart not found");
         return cart
+    }
+
+    async updateSingleCart(id: string, cartUpdate: UpdateCartsdto) {
+        await this.cartsRepository.update(id, cartUpdate)
+        const getCart = await this.cartsRepository.findOne({ where: { id: id } })
+        if (!getCart) throw new NotFoundException("Cart not found");
+        return getCart
     }
 
     async deleteSingleCarte(id: string){
         const getCart = await this.cartsRepository.findOne({where: {id: id}})
-        if (!getCart) throw new NotFoundException("Carts not found");
+        if (!getCart) throw new NotFoundException("Cart not found");
         const cart = await this.cartsRepository.remove(getCart)
         return cart
     }

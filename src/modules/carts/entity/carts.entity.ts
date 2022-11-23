@@ -1,5 +1,5 @@
 import { IsDate } from "class-validator";
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
 
@@ -15,18 +15,21 @@ export default class Carts{
     @Column({ nullable: false })
     product_id: string
 
-    @Column({ nullable: false })
+    @Column({nullable: true, type: 'timestamptz'})
     @IsDate()
-    created_at: string 
+    created_at: Date 
 
-    @Column({ nullable: false })
+    @UpdateDateColumn({ 
+        nullable: true, 
+        type: 'timestamptz'
+    })
     @IsDate()
-    updated_at: string
+    updated_at: Date
 
     @BeforeInsert()
     async BeforeCreateCart(){
-        this.created_at = Date()
-        this.updated_at = Date()
+        this.created_at = new Date()
+        this.updated_at = new Date()
     }
 
 }

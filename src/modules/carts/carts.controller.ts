@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
 import { CartsServices } from './carts.service';
 import { Cartsdto } from './dto/carts.dto';
+import { UpdateCartsdto } from './dto/update-cart.dto';
 
 
 @Controller('api/v1/carts')
@@ -37,6 +38,17 @@ export class CartsController {
         try{
             const data = await this.cartsService.getSingleCart(id)
             return returnResponse(HttpStatus.OK, "Get cart successfully!", data)
+        } catch (err) {
+            return returnResponse(err.status, err.message);
+        }
+    }
+
+    @Patch(':id')
+    @UsePipes(ValidationPipe)
+    async updateOneCart(@Param('id') id: string, @Body() updateCart: UpdateCartsdto) {
+        try {
+            const data = await this.cartsService.updateSingleCart(id, updateCart)
+            return returnResponse(HttpStatus.OK, "Cart updated successfully!", data)
         } catch (err) {
             return returnResponse(err.status, err.message);
         }
