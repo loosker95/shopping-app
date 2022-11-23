@@ -1,5 +1,5 @@
 import { IsDate, IsNotEmpty, IsString } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
 @Entity('coupons')
@@ -16,24 +16,30 @@ export default class coupons {
     @IsNotEmpty()
     public coupon_code: string
 
-    @Column({ nullable: false })
+    @Column({ nullable: true, type: 'timestamptz' })
     @IsNotEmpty()
-    public validity: string
+    public validity: Date
+
+    @Column({nullable: false, type: "float", default: 0.0})
+    public discount_rate: number
 
     @Column({ nullable: false })
-    public discount_rate: string
-
-    @Column({ nullable: false })
-    public active: string
+    public active: boolean
 
     @Column({ nullable: true, type: 'timestamptz' })
     @IsDate()
-    public created_at: string
+    public created_at: Date
 
     @UpdateDateColumn({
         nullable: true,
         type: 'timestamptz'
     })
     @IsDate()
-    public updated_at: string
+    public updated_at: Date
+
+    @BeforeInsert()
+    async beforeInsertCoupons(){
+        this.created_at = new Date()
+        this.updated_at = new Date();
+    }
 }
