@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { IsDate } from "class-validator";
 
 
@@ -17,18 +17,21 @@ export default class categories{
     @Column({ nullable: false })
     image: string
 
-    @Column({ nullable: false })
+    @Column({nullable: true, type: 'timestamptz'})
     @IsDate()
-    created_at: string
+    created_at: Date
 
-    @Column({ nullable: false })
+    @UpdateDateColumn({ 
+        nullable: true, 
+        type: 'timestamptz'
+    })
     @IsDate()
-    updated_at: string
+    updated_at: Date
  
     @BeforeInsert()
     async beforeCreatecategories(){
         this.image = 'https://tinyurl.com/pttnfwdu'
-        this.created_at = Date()
-        this.updated_at = Date()
+        this.created_at = new Date()
+        this.updated_at = new Date()
     }
 }
