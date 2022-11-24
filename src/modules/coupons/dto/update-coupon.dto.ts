@@ -1,27 +1,28 @@
-import { IsBooleanString, IsDate, IsDecimal, IsNotEmpty, IsString } from "class-validator"
+import { IsBooleanString, IsDecimal, IsOptional, IsString } from "class-validator"
 
 
-export class CreateCouponsDto{
+
+export class UpdateCouponsDto{
     
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     payment_id: string
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     coupon_code: string
 
     // @IsDate()
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     validity: string
 
     @IsDecimal()
-    @IsNotEmpty()
+    @IsOptional()
     discount_rate: number
 
     @IsBooleanString()
-    @IsNotEmpty()
+    @IsOptional()
     active: boolean
 
 }
