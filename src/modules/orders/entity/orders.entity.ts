@@ -1,6 +1,8 @@
 import { IsDate } from "class-validator";
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-
+import payments from "src/modules/payments/entity/payments.entity";
+import products from "src/modules/products/entity/products.entity";
+import users from "src/modules/users/entity/users.entity";
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
 @Entity('orders')
@@ -49,4 +51,16 @@ export default class orders{
         this.created_at = new Date()
         this.updated_at = new Date();
     }
+
+    @ManyToOne(type => users) 
+    @JoinColumn({ name: 'user_id' }) 
+    users: users;
+
+    @ManyToOne(type => products) 
+    @JoinColumn({ name: 'product_id' }) 
+    products: products;
+
+    @ManyToOne(type => payments) 
+    @JoinColumn({ name: 'payment_id' }) 
+    payments: payments;
 }

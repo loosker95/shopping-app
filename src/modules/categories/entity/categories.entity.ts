@@ -1,5 +1,6 @@
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { IsDate } from "class-validator";
+import products from "src/modules/products/entity/products.entity";
 
 
 @Entity('categories')

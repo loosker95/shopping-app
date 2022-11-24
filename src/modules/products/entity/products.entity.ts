@@ -1,5 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate, UpdateDateColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, UpdateDateColumn, ManyToMany, JoinColumn, JoinTable } from "typeorm";
 import { IsDate } from "class-validator"
+import categories from "src/modules/categories/entity/categories.entity";
+
 
 @Entity('products')
 export default class products {
@@ -48,5 +50,11 @@ export default class products {
         this.rating = 0.0
         this.created_at = new Date()
         this.updated_at = new Date()
-    }    
+    } 
+    
+    @ManyToMany((type) => categories, categories=>categories.id) 
+    @JoinTable({ name: 'products_categories' }) 
+    categories: categories;
+    
+    
 }

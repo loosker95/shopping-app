@@ -1,5 +1,6 @@
 import { IsDate, IsNotEmpty, IsString } from "class-validator";
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import payments from "src/modules/payments/entity/payments.entity";
+import { BeforeInsert, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
 @Entity('coupons')
@@ -42,4 +43,8 @@ export default class coupons {
         this.created_at = new Date()
         this.updated_at = new Date();
     }
+
+    @OneToOne(type => payments) 
+    @JoinColumn({ name: 'payment_id' }) 
+    payments: payments;
 }
