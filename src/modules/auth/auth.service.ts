@@ -22,8 +22,13 @@ export class AuthServices{
         if(!checPassword)throw new NotFoundException("Email or password incorect");
 
         const payload = {id: getInfoUser.id, email: loginUserInfo.email}
-        const token = this.tokensService.generateTokens(payload)
+        const tokens = this.tokensService.generateTokens(payload)
 
-        return ({loginUserInfo, token})
+        return ([
+            {
+                user: loginUserInfo, 
+                token: tokens
+            }
+            ])
     }
 }
