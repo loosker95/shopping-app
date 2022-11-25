@@ -21,7 +21,9 @@ export class UsersService {
     const hashPass = await hashPassword(userData.password);
     userData.password = hashPass;
 
-    if(userData.email){await this.isEmailExist(userData.email)}
+    const chekEmail = await this.isEmailExist(userData.email)
+    if (chekEmail) throw new NotFoundException("Email already exist...");
+
     const newUser = this.usersRepository.create(userData)
     await this.usersRepository.save(newUser);
     return newUser;
@@ -40,12 +42,12 @@ export class UsersService {
   }
 
   async updateSingleuser(id: string, userUpdate: UpdateUserDto) {
-    if(userUpdate.email){await this.isEmailExist(userUpdate.email)}
+    if (userUpdate.email) { await this.isEmailExist(userUpdate.email) }
 
     const hashPass = await hashPassword(userUpdate.password);
     userUpdate.password = hashPass;
     await this.usersRepository.update(id, userUpdate)
-    const getUser = await this.usersRepository.findOne({where: {id: id}})
+    const getUser = await this.usersRepository.findOne({ where: { id: id } })
 
     if (!getUser) throw new NotFoundException("User not found");
     return getUser
@@ -58,21 +60,25 @@ export class UsersService {
     return user
   }
 
-
-
-  async registeruser(addRegisterUser: CreateUserDto){
+  async registeruser(addRegisterUser: CreateUserDto) {
     const hashPass = await hashPassword(addRegisterUser.password);
     addRegisterUser.password = hashPass;
-    if(addRegisterUser.email){await this.isEmailExist(addRegisterUser.email)}
+
+    const chekEmail = await this.isEmailExist(addRegisterUser.email)
+    if (chekEmail) throw new NotFoundException("Email already exist...");
+
     const newUserRegister = this.usersRepository.create(addRegisterUser)
     await this.usersRepository.save(newUserRegister);
     return newUserRegister;
   }
 
-
-  async isEmailExist(email: string){
-    const getEmail = await this.usersRepository.findOne({where: {email: email}})
-    if (getEmail) throw new NotFoundException("Email already exist...");
+  async isEmailExist(email: string) {
+    const getEmail = await this.usersRepository.findOne({ where: { email: email } })
     return getEmail
+  }
+
+  async getUserId(email: string) {
+    const getUserInfoId = await this.usersRepository.findOne({ where: { email: email } })
+    return getUserInfoId
   }
 }

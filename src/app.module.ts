@@ -7,8 +7,8 @@ import { CouponsModule } from './modules/coupons/coupons.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { ProductsModule } from './modules/products/products.module';
+import { TokensModule } from './modules/tokens/tokens.module';
 import { UsersModule } from './modules/users/users.module';
-
 
 
 
@@ -22,7 +22,8 @@ import { UsersModule } from './modules/users/users.module';
     AuthModule,
     PaymentsModule,
     OrdersModule,
-    CouponsModule
+    CouponsModule,
+    TokensModule
   ],
   controllers: [],
   providers: [],
