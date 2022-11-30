@@ -47,7 +47,7 @@ export default class orders{
     public updated_at: Date
 
     @BeforeInsert()
-    async beforeInsertPayment(){
+    async beforeInsertOrders(){
         this.created_at = new Date()
         this.updated_at = new Date();
     }
