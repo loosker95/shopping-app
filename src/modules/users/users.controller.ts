@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/update-users.dto';
 import { UsersService } from './users.sevice';
+import { AuthGuard } from '@nestjs/passport';
+
 
 
 
@@ -22,9 +24,13 @@ export class UsersController {
     }
 
     @Get()
-    async getAllUser() {
+    async getAllUser(
+        @Query('page') page: number,
+        @Query('limit') limit: number,
+        @Query('limit') order: string
+    ) {
         try {
-            const data = await this.usersService.getUsers()
+            const data = await this.usersService.getUsers(page, limit)
             return returnResponse(HttpStatus.OK, "Get users successfully!", data)
         } catch (err) {
             return returnResponse(err.status, err.message);
