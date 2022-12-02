@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
+import { Order } from 'src/utils/enum/orderby,param';
 import { hashPassword } from 'src/utils/hash/hashPassword';
 import { BeforeInsert, EventSubscriber, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/update-users.dto';
 import users from './entity/users.entity';
-
 
 @Injectable()
 @EventSubscriber()
@@ -29,24 +29,34 @@ export class UsersService {
     return newUser;
   }
 
-  async getUsers(page?: number, limit?: number, order?: string) {
+  async getUsers(
+    page?: number, 
+    limit?: number
+    ){
     const pages = page
     const limits = limit
     const startIndex = (pages - 1) * limits
     const endIndex = pages * limits
 
-    if (page && limit) {
-      const user = await this.usersRepository.find({ 
-        skip: startIndex,
-        take: endIndex,
-      })
-      if (Object.keys(user).length == 0) throw new NotFoundException("User not found");
-      return { user, page, limit }
-    }
+      // if (keyword) {
+        const user = await this.usersRepository.createQueryBuilder("users")
+        .take(endIndex || 0)
+        .skip(startIndex || 0)
+        // .where({
+        //     name: keyword
+        //   })
+        .orderBy('name', "ASC")
+        .getMany()
+        if (Object.keys(user).length == 0) throw new NotFoundException("User not found");
+        return { user, page, limit }
+      // }
+  
+      // const user = await this.usersRepository.createQueryBuilder("users")
+      // .orderBy('name', 'ASC')
+      // .getMany()
+      // if (Object.keys(user).length == 0) throw new NotFoundException("User not found");
+      // return { user, page, limit }
 
-    const user = await this.usersRepository.find();
-    if (Object.keys(user).length == 0) throw new NotFoundException("User not found");
-    return { user, page, limit }
   }
 
   async getSingleUser(userID: string) {

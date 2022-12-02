@@ -27,7 +27,7 @@ export class UsersController {
     async getAllUser(
         @Query('page') page: number,
         @Query('limit') limit: number,
-        @Query('limit') order: string
+        // @Query('filter') filter: string
     ) {
         try {
             const data = await this.usersService.getUsers(page, limit)
