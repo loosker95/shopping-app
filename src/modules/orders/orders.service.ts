@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import payments from "../payments/entity/payments.entity";
 import CreateOrderDto from "./dto/create-order.dto";
 import UpdateOrderDto from "./dto/update-order.dto";
 import orders from "./entity/orders.entity";
@@ -18,10 +19,24 @@ export class OrdersService{
         return newOrders;
     }
 
-    async getOrders() {
-        const orders = await this.ordersRepository.find()
+    async getOrders(
+        page?: number,
+        limit?: number
+    ) {
+        const pages = page
+        const limits = limit
+        const startIndex = (pages - 1) * limits
+        const endIndex = pages * limits
+
+        const orders = await this.ordersRepository.createQueryBuilder("orders")
+        .take(endIndex || 0)
+        .skip(startIndex || 0)
+        .leftJoinAndSelect("orders.products", "Product")
+        .leftJoinAndSelect("orders.payments", "Payments")
+        .getMany()
         if (Object.keys(orders).length == 0) throw new NotFoundException("Orders not found");
-        return orders;
+        
+        return {orders, page, limit};
     }
 
     async getSingleOrder(id: string){

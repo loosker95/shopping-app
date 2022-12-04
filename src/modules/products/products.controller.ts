@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
 import { CreateProductDto } from './dto/createProducts.dto';
 import { UpdateProductsDto } from './dto/update-products.dto';
@@ -22,9 +22,12 @@ export class ProductsController {
     }
 
     @Get()
-    async getAllProducts() {
+    async getAllProducts(
+        @Query('page') page: number,
+        @Query('limit') limit: number
+    ) {
         try {
-            const data = await this.productsService.getProducts()
+            const data = await this.productsService.getProducts(page, limit)
             return returnResponse(HttpStatus.OK, "Get products successfully!", data)
         } catch (err) {
             return returnResponse(err.status, err.message);

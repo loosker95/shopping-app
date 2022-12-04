@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
 import CreateOrderDto from './dto/create-order.dto';
 import UpdateOrderDto from './dto/update-order.dto';
@@ -22,9 +22,12 @@ export class OrdersController {
     }
 
     @Get()
-    async getAllOrders() {
+    async getAllOrders(
+        @Query('page') page: number,
+        @Query('limit') limit: number
+    ) {
         try {
-            const data = await this.orderService.getOrders()
+            const data = await this.orderService.getOrders(page, limit)
             return returnResponse(HttpStatus.CREATED, "Get orders successfully!", data)
         } catch (err) {
             return returnResponse(err.status, err.message);

@@ -20,8 +20,21 @@ export class ProductsService {
         return newProducts;
     }
 
-    async getProducts() {
-        const products = this.productsRepository.find()
+    async getProducts(
+        page?: number,
+        limit?: number
+    ) {
+        const pages = page
+        const limits = limit
+        const startIndex = (pages - 1) * limits
+        const endIndex = pages * limits
+
+        const products = this.productsRepository.createQueryBuilder("products")
+        .take(endIndex || 0)
+        .skip(startIndex || 0)
+        .leftJoinAndSelect("products.reviews", "Review")
+        .getMany()
+
         if (!products) throw new NotFoundException("Products not found");
         return products;
     }

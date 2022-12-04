@@ -4,8 +4,7 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/update-users.dto';
 import { UsersService } from './users.sevice';
 import { AuthGuard } from '@nestjs/passport';
-
-
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 
 @Controller('api/v1/users')
@@ -26,8 +25,7 @@ export class UsersController {
     @Get()
     async getAllUser(
         @Query('page') page: number,
-        @Query('limit') limit: number,
-        // @Query('filter') filter: string
+        @Query('limit') limit: number
     ) {
         try {
             const data = await this.usersService.getUsers(page, limit)
@@ -37,6 +35,7 @@ export class UsersController {
         }
     }
 
+    // @UseGuards(JwtAuthGuard)
     @Get(':id')
     async getOneUser(@Param('id') id: string) {
         try {

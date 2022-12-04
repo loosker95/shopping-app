@@ -20,7 +20,9 @@ export class PaymentsServices {
     }
 
     async getPayments() {
-        const payments = await this.paymentsRepository.find()
+        const payments = await this.paymentsRepository.createQueryBuilder("payments")
+        .leftJoinAndSelect("payments.coupon", "Coupon")
+        .getMany()
         if (Object.keys(payments).length == 0) throw new NotFoundException("Payments not found");
         return payments
     }

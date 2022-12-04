@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Order } from 'src/utils/enum/orderby,param';
 import { hashPassword } from 'src/utils/hash/hashPassword';
@@ -30,37 +30,32 @@ export class UsersService {
   }
 
   async getUsers(
-    page?: number, 
+    page?: number,
     limit?: number
-    ){
+  ) {
     const pages = page
     const limits = limit
     const startIndex = (pages - 1) * limits
     const endIndex = pages * limits
 
-      // if (keyword) {
-        const user = await this.usersRepository.createQueryBuilder("users")
-        .take(endIndex || 0)
-        .skip(startIndex || 0)
-        // .where({
-        //     name: keyword
-        //   })
-        .orderBy('name', "ASC")
-        .getMany()
-        if (Object.keys(user).length == 0) throw new NotFoundException("User not found");
-        return { user, page, limit }
-      // }
-  
-      // const user = await this.usersRepository.createQueryBuilder("users")
-      // .orderBy('name', 'ASC')
-      // .getMany()
-      // if (Object.keys(user).length == 0) throw new NotFoundException("User not found");
-      // return { user, page, limit }
+    const user = await this.usersRepository.createQueryBuilder("users")
+    .take(endIndex || 0)
+    .skip(startIndex || 0)
+    .leftJoinAndSelect("users.orders", "Order")
+    .leftJoinAndSelect("users.reviews", "Reviews")
+    .leftJoinAndSelect("users.Carts", "Carts")
+    .orderBy('users.name', "ASC")
+    .getMany()
+    if (Object.keys(user).length == 0) throw new NotFoundException("User not found");
+    return { user, page, limit }
 
   }
 
   async getSingleUser(userID: string) {
-    const user = await this.usersRepository.findOne({ where: { id: userID } })
+    const user = await this.usersRepository.createQueryBuilder("users")
+    .leftJoinAndSelect("users.orders", "Order")
+    .where("users.id= :userId", { userId: userID })
+    .getOne()
     if (!user) throw new NotFoundException("User not found");
     return user;
   }
@@ -102,9 +97,22 @@ export class UsersService {
   }
 
   async getUserId(email: string) {
+    const chekEmail = await this.isEmailExist(email)
+    if (!chekEmail) throw new NotFoundException("User not exist...");
     const getUserInfoId = await this.usersRepository.findOne({ where: { email: email } })
     return getUserInfoId
   }
+
+  async getUserById(id: string) {
+    try {
+      const user = await this.usersRepository.findOne({ where: { id } });
+      if (!user) throw new NotFoundException("User not found");
+      return user;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
 
 
 }

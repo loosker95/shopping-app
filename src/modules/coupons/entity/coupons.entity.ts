@@ -44,7 +44,8 @@ export default class coupons {
         this.updated_at = new Date();
     }
 
-    @OneToOne(type => payments) 
+    @OneToOne(type => payments, (payment) => payment.coupon) 
+
     @JoinColumn({ name: 'payment_id' }) 
     payments: payments;
 }

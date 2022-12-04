@@ -20,7 +20,11 @@ export class CouponsService {
     }
     
     async getCoupons() {
-        const coupons = await this.couponsRepository.find()
+        const coupons = await this.couponsRepository.find({
+            relations: {
+                payments: true,
+            },
+        })
         if (Object.keys(coupons).length == 0) throw new NotFoundException("Coupons not found");
         return coupons;
     }
