@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { categoriesServives } from './categories.service';
 import { categoriesDto } from './dto/category.dto';
 import { updateCategoryDto } from './dto/update-category.dto';
@@ -10,8 +11,8 @@ export class CategoriesController {
     constructor(
         private readonly categoriesServices: categoriesServives) { }
 
+    @UseGuards(JwtAuthGuard)
     @Post()
-    @UsePipes(ValidationPipe)
     async createCategory(@Body() createCategory: categoriesDto) {
         try {
             const data = await this.categoriesServices.addCategory(createCategory)
@@ -41,6 +42,7 @@ export class CategoriesController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
     @UsePipes(ValidationPipe)
     async updateOnecategory(@Param('id') id: string, @Body() updateCategory: updateCategoryDto) {
@@ -52,6 +54,7 @@ export class CategoriesController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async deleteOnecaterogy(@Param('id') id: string) {
         try {

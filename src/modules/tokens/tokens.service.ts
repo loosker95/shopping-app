@@ -18,8 +18,8 @@ export class TokensServices {
         return this.JwtService.sign(
             { payload },
             {
-                secret: 'Fabien',
-                expiresIn: '10m',
+                secret: process.env.TOKEN_SECRET,
+                expiresIn: process.env.TOKEN_EXPIRE_TIME,
             },
         );
     }
@@ -28,8 +28,8 @@ export class TokensServices {
         return this.JwtService.sign(
             { payload },
             {
-                secret: "Fab",
-                expiresIn: "10m"
+                secret: process.env.REFRESH_TOKEN_SECRET,
+                expiresIn: process.env.REFRESH_TOKEN_EXPIRE_TIME
             },
         );
     }

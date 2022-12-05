@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CreateReviewsDto } from './dto/create-review.dto';
 import { UpdateReviewsDto } from './dto/update-review.dto';
 import { reviewsService } from './reviews.service';
@@ -12,6 +13,7 @@ export class ReviewsController {
         private readonly reviewsService: reviewsService
     ) { }
 
+    @UseGuards(JwtAuthGuard)
     @Post()
     async createreview(@Body() reviewCreate: CreateReviewsDto){
         try {
@@ -38,6 +40,7 @@ export class ReviewsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
     @UsePipes(ValidationPipe)
     async updateOneReview(@Param('id') id: string, @Body() updateReview: UpdateReviewsDto){
@@ -49,6 +52,7 @@ export class ReviewsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async deleteOneCoupon(@Param('id') id: string) {
         try {

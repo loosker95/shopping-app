@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CreatePaymentDto } from './dto/create-payments.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { PaymentsServices } from './payments.service';
@@ -10,8 +11,8 @@ returnResponse
 export class PaymentsController {
     constructor(private readonly paymentsServices: PaymentsServices) { }
 
+    @UseGuards(JwtAuthGuard)
     @Post()
-    @UsePipes(ValidationPipe)
     async addPayment(@Body() paymentCreate: CreatePaymentDto) {
         try {
             const data = await this.paymentsServices.createPayment(paymentCreate)
@@ -21,6 +22,7 @@ export class PaymentsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getAllPayments() {
         try {
@@ -31,6 +33,7 @@ export class PaymentsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get(':id')
     async getOnePayment(@Param('id') id: string) {
         try {
@@ -41,6 +44,7 @@ export class PaymentsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
     @UsePipes(ValidationPipe)
     async udateOnePayment(@Param('id') id: string, @Body() updadePayment: UpdatePaymentDto) {
@@ -52,6 +56,7 @@ export class PaymentsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async deletePayment(@Param('id') id: string) {
         try {

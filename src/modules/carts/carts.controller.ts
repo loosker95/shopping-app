@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CartsServices } from './carts.service';
 import { Cartsdto } from './dto/carts.dto';
 import { UpdateCartsdto } from './dto/update-cart.dto';
@@ -12,6 +13,7 @@ export class CartsController {
     ) { }
 
 
+    @UseGuards(JwtAuthGuard)
     @Post()
     @UsePipes(ValidationPipe)
     async createCarts(@Body() createCarts: Cartsdto) {
@@ -23,6 +25,7 @@ export class CartsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getAllCarts() {
         try {
@@ -33,6 +36,7 @@ export class CartsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get(':id')
     async getOnecart(@Param('id') id: string){
         try{
@@ -43,6 +47,7 @@ export class CartsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
     @UsePipes(ValidationPipe)
     async updateOneCart(@Param('id') id: string, @Body() updateCart: UpdateCartsdto) {
@@ -54,6 +59,7 @@ export class CartsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async deleteOneCart(@Param('id') id: string){
         try{

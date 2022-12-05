@@ -1,5 +1,7 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import CreateOrderDto from './dto/create-order.dto';
 import UpdateOrderDto from './dto/update-order.dto';
 import { OrdersService } from './orders.service';
@@ -10,6 +12,7 @@ import { OrdersService } from './orders.service';
 export class OrdersController {
     constructor(private readonly orderService: OrdersService){}
 
+    @UseGuards(JwtAuthGuard)
     @Post()
     @UsePipes(ValidationPipe)
     async createOrder(@Body() productOrder: CreateOrderDto) {
@@ -21,6 +24,7 @@ export class OrdersController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getAllOrders(
         @Query('page') page: number,
@@ -34,6 +38,7 @@ export class OrdersController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get(':id')
     async getOneOrder(@Param('id') id: string) {
         try {
@@ -44,6 +49,7 @@ export class OrdersController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
     @UsePipes(ValidationPipe)
     async updateOneOrder(@Param('id') id: string, @Body() orderProduct: UpdateOrderDto){
@@ -55,6 +61,7 @@ export class OrdersController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async deleteOneOrder(@Param('id') id: string) {
         try {

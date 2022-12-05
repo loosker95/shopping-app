@@ -1,7 +1,6 @@
-import { Injectable, NotFoundException} from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException} from "@nestjs/common";
 import { TokensServices } from "../tokens/tokens.service";
 import { UsersService } from "../users/users.sevice";
-import { JwtService } from '@nestjs/jwt';
 import { LogInDto } from "./dto/login.dto";
 import * as bcrypt from 'bcrypt';
 
@@ -35,37 +34,13 @@ export class AuthServices{
             ])
     }
 
-    // async login(email: string, password: string){
-    //     const checkEmail = await this.usersService.isEmailExist(email)
-
-    //     if(!checkEmail) throw new NotFoundException("User doesn't exist");
-    //     const getInfoUser = await this.usersService.getUserId(email)
-
-    //     const checPassword = await bcrypt.compare(password, getInfoUser.password);
-    //     if(!checPassword)throw new NotFoundException("Email or password incorect");
-        
-    //     return null;
-    // }
-
-
-    // async validateUserCredentials(email: string, password: string) {
-    //     const checkUser = await this.usersService.isEmailExist(email)
-    //     if (checkUser && checkUser.password === password) {
-    //         const {password, ...result} = checkUser;
-    //         return result;
-    //     }
-    //     return null;
-    // }
-
-    async loginWithCredentials(user: LogInDto) {
-    const getInfoUser = await this.usersService.getUserId(user.email)
-    const payload = { id: getInfoUser.id, email: user.email }
-    const tokens = this.tokensService.generateTokens(payload)
-
-        return {
-            access_token: tokens,
-        };
-    }
+    async validateUser(email: string){
+        const user = await this.usersService.isEmailExist(email['payload'].email);
+        if (!user) {
+          throw new HttpException('Invalid token...', HttpStatus.UNAUTHORIZED);
+        }      
+        return user;
+      }
 
     
 }

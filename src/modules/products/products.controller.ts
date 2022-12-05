@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CreateProductDto } from './dto/createProducts.dto';
 import { UpdateProductsDto } from './dto/update-products.dto';
 import { ProductsService } from './products.service';
@@ -10,8 +11,8 @@ import { ProductsService } from './products.service';
 export class ProductsController {
     constructor(private readonly productsService: ProductsService) { }
 
+    @UseGuards(JwtAuthGuard)
     @Post()
-    @UsePipes(ValidationPipe)
     async createProduct(@Body() productCreate: CreateProductDto) {
         try {
             const data = await this.productsService.addProduct(productCreate)
@@ -44,8 +45,8 @@ export class ProductsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
-    @UsePipes(ValidationPipe)
     async updateOneproduct(@Param('id') id: string, @Body() updateProduct: UpdateProductsDto){
         try{
             const data = await this.productsService.updateSingleProducts(id, updateProduct)
@@ -55,6 +56,7 @@ export class ProductsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async deleteOneProducts(@Param('id') id: string) {
         try {

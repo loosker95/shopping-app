@@ -11,8 +11,8 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
+    @UseGuards(JwtAuthGuard)
     @Post()
-    @UsePipes(ValidationPipe)
     async addUser(@Body() usercreate: CreateUserDto) {
         try {
             const data = await this.usersService.createUser(usercreate)
@@ -22,6 +22,7 @@ export class UsersController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getAllUser(
         @Query('page') page: number,
@@ -35,7 +36,7 @@ export class UsersController {
         }
     }
 
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Get(':id')
     async getOneUser(@Param('id') id: string) {
         try {
@@ -46,6 +47,7 @@ export class UsersController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
     @UsePipes(ValidationPipe)
     async udateOneUser(@Param('id') id: string, @Body() updadeUser: UpdateUserDto) {
@@ -57,6 +59,7 @@ export class UsersController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async deleteuser(@Param('id') id: string) {
         try {
@@ -67,6 +70,7 @@ export class UsersController {
         }
     }
 
+    
     @Post('register')
     @UsePipes(ValidationPipe)
     async registerUser(@Body() registerUser: CreateUserDto) {
