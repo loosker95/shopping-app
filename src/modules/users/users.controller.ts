@@ -72,7 +72,6 @@ export class UsersController {
 
     
     @Post('register')
-    @UsePipes(ValidationPipe)
     async registerUser(@Body() registerUser: CreateUserDto) {
         try {
             const data = await this.usersService.registeruser(registerUser)
