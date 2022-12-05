@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CartsServices } from './carts.service';
@@ -27,9 +27,9 @@ export class CartsController {
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    async getAllCarts() {
+    async getAllCarts(@Req() request) {
         try {
-            const data = await this.cartsService.getCarts()
+            const data = await this.cartsService.getCarts(request.user)
             return returnResponse(HttpStatus.OK, "Get carts successfully!", data)
         } catch (err) {
             return returnResponse(err.status, err.message);

@@ -69,15 +69,4 @@ export class UsersController {
             return returnResponse(err.status, err.message);
         }
     }
-
-    
-    @Post('register')
-    async registerUser(@Body() registerUser: CreateUserDto) {
-        try {
-            const data = await this.usersService.registeruser(registerUser)
-            return returnResponse(HttpStatus.ACCEPTED, "User register successfully!", data)
-        } catch (err) {
-            return returnResponse(err.status, err.message);
-        }
-    }
 }

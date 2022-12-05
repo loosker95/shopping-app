@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
@@ -28,10 +28,11 @@ export class OrdersController {
     @Get()
     async getAllOrders(
         @Query('page') page: number,
-        @Query('limit') limit: number
+        @Query('limit') limit: number,
+        @Req() request
     ) {
         try {
-            const data = await this.orderService.getOrders(page, limit)
+            const data = await this.orderService.getOrders(page, limit, request.user)
             return returnResponse(HttpStatus.CREATED, "Get orders successfully!", data)
         } catch (err) {
             return returnResponse(err.status, err.message);

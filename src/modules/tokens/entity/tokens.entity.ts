@@ -19,9 +19,9 @@ export default class tokens{
     @Column({nullable: true})
     public refresh_token: string 
 
-    @Column({nullable: true, type: 'timestamptz'})
+    @Column({nullable: true})
     @IsDate()
-    public expiration_date: Date
+    public duration: string
 
     @Column({nullable: true, type: 'timestamptz'})
     @IsDate()

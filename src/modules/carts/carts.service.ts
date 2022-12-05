@@ -18,10 +18,12 @@ export class CartsServices{
         return cart
     }
 
-    async getCarts(){
+    async getCarts(request: string){
+        console.log(request['id'])
         const cart = await this.cartsRepository.createQueryBuilder("Carts")
         .leftJoinAndSelect("Carts.users", "Users")
         .leftJoinAndSelect("Carts.products", "Products")
+        .where({user_id: request['id']})
         .getMany()
         if (Object.keys(cart).length == 0) throw new NotFoundException("Carts not found");
         return cart

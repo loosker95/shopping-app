@@ -21,7 +21,8 @@ export class OrdersService{
 
     async getOrders(
         page?: number,
-        limit?: number
+        limit?: number,
+        request?: string
     ) {
         const pages = page
         const limits = limit
@@ -32,6 +33,7 @@ export class OrdersService{
         .take(endIndex || 0)
         .skip(startIndex || 0)
         .leftJoinAndSelect("orders.products", "Product")
+        .where({user_id: request['id']})
         .leftJoinAndSelect("orders.payments", "Payments")
         .getMany()
         if (Object.keys(orders).length == 0) throw new NotFoundException("Orders not found");

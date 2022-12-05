@@ -1,6 +1,5 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
-import { Order } from 'src/utils/enum/orderby,param';
 import { hashPassword } from 'src/utils/hash/hashPassword';
 import { BeforeInsert, EventSubscriber, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
@@ -79,18 +78,6 @@ export class UsersService {
     return user
   }
 
-  async registeruser(addRegisterUser: CreateUserDto) {
-    const hashPass = await hashPassword(addRegisterUser.password);
-    addRegisterUser.password = hashPass;
-
-    const chekEmail = await this.isEmailExist(addRegisterUser.email)
-    if (chekEmail) throw new NotFoundException("Email already exist...");
-
-    const newUserRegister = this.usersRepository.create(addRegisterUser)
-    await this.usersRepository.save(newUserRegister);
-    return newUserRegister;
-  }
-
   async isEmailExist(email: string) {
     const getEmail = await this.usersRepository.findOne({ where: { email: email } })
     return getEmail
@@ -103,16 +90,10 @@ export class UsersService {
     return getUserInfoId
   }
 
-  async getUserById(id: string) {
-    try {
-      const user = await this.usersRepository.findOne({ where: { id } });
-      if (!user) throw new NotFoundException("User not found");
-      return user;
-    } catch (error) {
-      throw new HttpException(error.message, error.status);
-    }
+  async saveUser(addRegisterUser: CreateUserDto){
+    const newUserRegister = this.usersRepository.create(addRegisterUser)
+    await this.usersRepository.save(newUserRegister);
+    return newUserRegister
   }
-
-
 
 }

@@ -42,4 +42,21 @@ export class TokensServices {
         return tokens
     }
 
+    async CheckIfUserHasToken(id: string){
+        const IdUser = this.tokensRepository.count({where: {user_id: id}})
+        return IdUser
+    }
+
+    async DeleteToKenForUser(id: string){
+        const findToken = await this.tokensRepository.find({where: {user_id: id}})
+        await this.tokensRepository.remove(findToken)
+        return findToken
+    }
+
+    public async saveToken(tokenData: any){
+        const data = this.tokensRepository.create(tokenData)
+        await this.tokensRepository.save(data)
+        return data
+    }
+
 }
