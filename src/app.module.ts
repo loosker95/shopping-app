@@ -12,8 +12,6 @@ import { TokensModule } from './modules/tokens/tokens.module';
 import { UsersModule } from './modules/users/users.module';
 
 
-
-
 @Module({
   imports: [
     DatabaseModule,
@@ -26,7 +24,7 @@ import { UsersModule } from './modules/users/users.module';
     OrdersModule,
     CouponsModule,
     TokensModule,
-    reviewsModule
+    reviewsModule,
   ],
   controllers: [],
   providers: [],

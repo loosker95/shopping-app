@@ -1,5 +1,7 @@
 import { Body, Controller, HttpStatus, Post, Req, UseGuards} from '@nestjs/common';
+import { request } from 'http';
 import { returnResponse } from 'src/utils/helpers/returnResponse';
+import { RefreshTokenDto } from '../tokens/dto/refresh-token.dto';
 import { CreateUserDto } from '../users/dto/createUser.dto';
 import { AuthServices } from './auth.service';
 import { LogInDto } from './dto/login.dto';
@@ -27,6 +29,20 @@ export class AuthController {
     async CreateLogin(@Body() loginUser: LogInDto){
         const data = await this.authServices.login(loginUser)
         return returnResponse(HttpStatus.OK, "Login successfully!", data)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('refresh-token')
+    async tokenRefresh(
+        @Body() refreshToken: RefreshTokenDto, 
+        @Req() request
+        ){
+        try{
+            const data = await this.authServices.refreshToken(request.user, refreshToken)
+            return returnResponse(HttpStatus.OK, "Refresh token successfully!", data)
+        }catch (error) {
+            return returnResponse(error.status, error.message)
+        }
     }
 
     @UseGuards(JwtAuthGuard)

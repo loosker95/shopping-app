@@ -6,6 +6,8 @@ import * as bcrypt from 'bcrypt';;
 import { LogOutDto } from "./dto/logout.dto";
 import { CreateUserDto } from "../users/dto/createUser.dto";
 import { hashPassword } from "src/utils/hash/hashPassword";
+import { RefreshTokenDto } from "../tokens/dto/refresh-token.dto";
+// import { emailService } from "../email/email.service";
 
 
 @Injectable()
@@ -13,6 +15,7 @@ export class AuthServices{
     constructor(
         private readonly usersService: UsersService,
         private readonly tokensService: TokensServices,
+        // private readonly emailService: emailService
     )
     {}
 
@@ -48,7 +51,18 @@ export class AuthServices{
             updated_at: new Date()
         }
         await this.tokensService.saveToken(data)
+        // await this.emailService.sendMail(getInfoUser.email)
+
         return ([{user: loginUserInfo, token: tokens}])
+    }
+
+
+    async refreshToken(payload: any, refresh: RefreshTokenDto){
+        const isRefreshTokenExist = await this.tokensService.ifRefreshTokenExist(refresh.refresh_token)
+        if(!isRefreshTokenExist) throw new NotFoundException("Invalid refresh Token...");
+        const payloadData = {id: payload.id, email: payload.email}
+        const token = this.tokensService.generateAccessToken(payloadData)
+        return {access_token: token}
     }
 
     async logout(logOutData: LogOutDto, UserData: any){

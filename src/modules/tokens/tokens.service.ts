@@ -14,7 +14,7 @@ export class TokensServices {
     ) { }
 
     
-    private generateAccessToken(payload: any) {
+    public generateAccessToken(payload: any) {
         return this.JwtService.sign(
             { payload },
             {
@@ -24,7 +24,7 @@ export class TokensServices {
         );
     }
 
-    private generateRefreshToken(payload: any): string {
+    public generateRefreshToken(payload: any): string {
         return this.JwtService.sign(
             { payload },
             {
@@ -40,6 +40,15 @@ export class TokensServices {
             refresh_token: this.generateRefreshToken(payload)
         }
         return tokens
+    }
+
+    async ifRefreshTokenExist(refreshToken: any){
+        const checkRefreshToken = await this.tokensRepository.findOne({
+            where: {
+                refresh_token: refreshToken
+            }
+        })
+        return checkRefreshToken
     }
 
     async CheckIfUserHasToken(id: string){
